@@ -21,4 +21,26 @@ describe('backend-gitty routes', () => {
       /https:\/\/github.com\/login\/oauth\/authorize\?client_id=[\w\d]+&scope=user&redirect_uri=http:\/\/localhost:7890\/api\/v1\/github\/login\/callback/i
     );
   });
+
+  it('should login and redirect users to /api/v1/github/dashboard', async () => {
+    const res = await request
+      .agent(app)
+      .get('/api/v1/github/login/callback?code=42')
+      .redirects(1);
+
+    expect(res.req.path).toEqual('/api/v1/posts');
+  });
+
+  it('should login and redirect users to /api/v1/github/dashboard', async () => {
+    const agent = request.agent(app);
+
+    await request
+      .agent(app)
+      .get('/api/v1/github/login/callback?code=42')
+      .redirects(1);
+
+    const res = await agent.delete('/api/v1/users/session');
+
+    expect(res.body).toEqual({ message: 'Logged Out' });
+  });
 });
