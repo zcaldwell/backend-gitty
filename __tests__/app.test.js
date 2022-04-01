@@ -34,13 +34,13 @@ describe('backend-gitty routes', () => {
   it('should login and redirect users to /api/v1/github/dashboard', async () => {
     const agent = request.agent(app);
 
-    await request
-      .agent(app)
+    const login = await agent
       .get('/api/v1/github/login/callback?code=42')
       .redirects(1);
 
-    const res = await agent.delete('/api/v1/users/session');
+    expect(login.req.path).toEqual('/api/v1/posts');
+    const logout = await agent.delete('/api/v1/github/logout');
 
-    expect(res.body).toEqual({ message: 'Logged Out' });
+    expect(logout.body).toEqual({ message: 'Logged Out' });
   });
 });
