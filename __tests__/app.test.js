@@ -39,8 +39,23 @@ describe('backend-gitty routes', () => {
       .redirects(1);
 
     expect(login.req.path).toEqual('/api/v1/posts');
+
     const logout = await agent.delete('/api/v1/github/logout');
 
     expect(logout.body).toEqual({ message: 'Logged Out' });
+  });
+
+  it('should allow the user to view all their posts', async () => {
+    const agent = request.agent(app);
+
+    let res = await agent.get('/api/v1/posts');
+
+    expect(res.status).toEqual(401);
+
+    await agent.get('/api/v1/github/login/callback?code=42');
+
+    res = await agent.get('/api/v1/posts');
+
+    expect(res.status).toEqual(200);
   });
 });
