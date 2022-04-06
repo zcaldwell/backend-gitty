@@ -6,8 +6,9 @@ DROP TABLE IF EXISTS posts CASCADE;
 
 CREATE TABLE users (
   id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-  github_username TEXT NOT NULL PRIMARY KEY,
-  github_photo_url TEXT NOT NULL
+  username TEXT NOT NULL,
+  email TEXT,
+  avatar TEXT
 );
 
 CREATE TABLE posts (
@@ -15,8 +16,3 @@ CREATE TABLE posts (
   content TEXT NOT NULL,
   user_id BIGINT REFERENCES users(id)
 );
-
-INSERT INTO posts (content)
-VALUES 
-    ('I hope these tests pass'),
-    ('Me too ohter post');

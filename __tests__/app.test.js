@@ -18,7 +18,7 @@ describe('backend-gitty routes', () => {
     const req = await request(app).get('/api/v1/github/login');
 
     expect(req.header.location).toMatch(
-      /https:\/\/github.com\/login\/oauth\/authorize\?client_id=[\w\d]+&scope=user&redirect_uri=http:\/\/localhost:7890\/api\/v1\/github\/login\/callback/i
+      'https://github.com/login/oauth/authorize?client_id=67734057ed2b489c93c9&scope=user&redirect_uri=http://localhost:7890/api/v1/auth/login/callback'
     );
   });
 
@@ -57,5 +57,21 @@ describe('backend-gitty routes', () => {
     res = await agent.get('/api/v1/posts');
 
     expect(res.status).toEqual(200);
+  });
+
+  it('user can create a post', async () => {
+    const agent = request.agent(app);
+    const expected = {
+      id: '1',
+      content: 'example',
+      userId: '1',
+    };
+    let res = await agent.post('/api/v1/posts').send(expected);
+    expect(res.status).toEqual(401);
+
+    await agent.get('/api/v1/github/login/callback?code=42');
+
+    res = await agent.post('/api/v1/posts').send(expected);
+    expect(res.body).toEqual(expected);
   });
 });
