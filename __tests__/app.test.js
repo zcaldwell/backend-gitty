@@ -74,4 +74,13 @@ describe('backend-gitty routes', () => {
     res = await agent.post('/api/v1/posts').send(expected);
     expect(res.body).toEqual(expected);
   });
+
+  it('allows user to view list of quotes', async () => {
+    const res = await request(app).get('/api/v1/quotes');
+    expect(res.body).toEqual([
+      { author: expect.any(String), content: expect.any(String) },
+      { author: expect.any(String), content: expect.any(String) },
+      { author: expect.any(String), content: expect.any(String) },
+    ]);
+  });
 });
